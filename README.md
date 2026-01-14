@@ -1,24 +1,25 @@
-# Transmitly.ChannelProvider.{Name}
+# Transmitly.ChannelProvider.Mailgun
 
-A [Transmitly](https://github.com/transmitly/transmitly) channel provider that {description}.
+A [Transmitly](https://github.com/transmitly/transmitly) channel provider that enables sending Email communications with [Mailgun](https://www.mailgun.com).
 
 ### Getting started
 
-To use the {Name} channel provider, first install the [NuGet package](https://nuget.org/packages/transmitly.channelprovider.{name}):
+To use the Mailgun channel provider, first install the [NuGet package](https://nuget.org/packages/transmitly.channelprovider.mailgun):
 
 ```shell
-dotnet add package Transmitly.ChannelProvider.{Name}
+dotnet add package Transmitly.ChannelProvider.Mailgun
 ```
 
-Then add the channel provider using `Add{Name}Support()`:
+Then add the channel provider using `AddMailgunSupport()`:
 
 ```csharp
 using Transmitly;
 ...
 var communicationClient = new CommunicationsClientBuilder()
-	.Add{Name}Support(options =>
+	.AddMailgunSupport(options =>
 	{
-		
+		options.ApiKey = "your-api-key";
+		options.SendingDomain = "mg.example.com";
 	})
 ```
 * See the [Transmitly](https://github.com/transmitly/transmitly) project for more details on what a channel provider is and how it can be configured.
