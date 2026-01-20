@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Mailgun.Api;
 using Transmitly.ChannelProvider.Mailgun.Api.Email;
 using Transmitly.ChannelProvider.Mailgun.Configuration;
 
@@ -37,6 +38,7 @@ namespace Transmitly
 				.AddDispatcher<EmailChannelProviderDispatcher, IEmail>(Id.Channel.Email())
 				.AddEmailExtendedPropertiesAdaptor<EmailExtendedChannelProperties>()
 				.AddDeliveryReportRequestAdaptor<EmailDeliveryStatusReportAdaptor>()
+				.AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
 				.Register();
 
 			return channelProviderConfiguration;
