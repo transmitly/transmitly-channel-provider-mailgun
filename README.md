@@ -41,7 +41,7 @@ ICommunicationsClient client = new CommunicationsClientBuilder()
 
 var result = await client.DispatchAsync(
 	"welcome-email",
-	"customer@example.com".AsIdentityAddress("Customer"),
+	"customer@example.com",
 	new { });
 ```
 
