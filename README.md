@@ -27,6 +27,8 @@ ICommunicationsClient client = new CommunicationsClientBuilder()
 	{
 		options.ApiKey = "key-your-mailgun-api-key";
 		options.SendingDomain = "mg.example.com";
+		// Required unless ValidateDeliveryReportSignature = false. See Delivery Reports.
+		options.WebhookSigningKey = "your-webhook-signing-key";
 	})
 	.AddPipeline("welcome-email", pipeline =>
 	{
@@ -94,6 +96,11 @@ pipeline.AddEmail("welcome@example.com".AsIdentityAddress("Example App"), email 
 This package registers a Mailgun delivery-report adaptor, so Mailgun webhook payloads can be converted into Transmitly `DeliveryReport` instances.
 
 It also registers Mailgun delivery-report extended properties, which makes `report.Mailgun()` available when you need provider-specific webhook data.
+
+Webhooks are checked against Mailgun's `signature`, `timestamp` and `token` fields. Requests that fail the check are rejected with `403 Forbidden` by the MVC integration packages.
+
+- `WebhookSigningKey`: the HTTP webhook signing key from Sending → Webhooks, not your API key. `AddMailgunSupport` throws at startup if it is missing while `ValidateDeliveryReportSignature` is `true`.
+- `ValidateDeliveryReportSignature`: defaults to `true`. Set it to `false` if you don't receive Mailgun webhooks; then no key is needed.
 
 ## Related Packages
 

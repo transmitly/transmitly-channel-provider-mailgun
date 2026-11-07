@@ -13,9 +13,9 @@
 //  limitations under the License.
 
 using System;
-using Transmitly.ChannelProvider.Mailgun.Api;
 using Transmitly.ChannelProvider.Mailgun.Api.Email;
 using Transmitly.ChannelProvider.Mailgun.Configuration;
+using Transmitly.Exceptions;
 
 namespace Transmitly
 {
@@ -28,17 +28,18 @@ namespace Transmitly
 		/// <param name="options">Configuration options for the Mailgun dispatcher.</param>
 		/// <param name="providerId">Optional provider identifier.</param>
 		/// <returns><paramref name="channelProviderConfiguration"/></returns>
+		/// <exception cref="CommunicationsException">Signature validation is on but no <see cref="MailgunOptions.WebhookSigningKey"/> is set.</exception>
 		public static CommunicationsClientBuilder AddMailgunSupport(this CommunicationsClientBuilder channelProviderConfiguration, Action<MailgunOptions> options, string? providerId = null)
 		{
 			var opts = new MailgunOptions();
 			options(opts);
+			if (opts.ValidateDeliveryReportSignature && string.IsNullOrWhiteSpace(opts.WebhookSigningKey))
+				throw new CommunicationsException($"Mailgun {nameof(MailgunOptions.WebhookSigningKey)} is required when {nameof(MailgunOptions.ValidateDeliveryReportSignature)} is true. Set it to your HTTP webhook signing key, or set {nameof(MailgunOptions.ValidateDeliveryReportSignature)} = false if you don't receive Mailgun webhooks.");
 			channelProviderConfiguration
 				.ChannelProvider
 				.Build(Id.ChannelProvider.Mailgun(providerId), opts)
 				.AddDispatcher<EmailChannelProviderDispatcher, IEmail>(Id.Channel.Email())
-				.AddEmailExtendedPropertiesAdaptor<EmailExtendedChannelProperties>()
 				.AddDeliveryReportRequestAdaptor<EmailDeliveryStatusReportAdaptor>()
-				.AddDeliveryReportExtendedPropertiesAdaptor<DeliveryReportExtendedProperties>()
 				.Register();
 
 			return channelProviderConfiguration;
